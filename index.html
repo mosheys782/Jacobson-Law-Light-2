@@ -963,8 +963,28 @@
   // Nav scroll effect
   window.addEventListener('scroll', () => {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
-    // Show floating CTA after scrolling past hero
-    document.getElementById('floatingCta').classList.toggle('visible', window.scrollY > 500);
+  });
+
+  // Floating CTA - show after hero, hide near contact/footer
+  const floatingCta = document.getElementById('floatingCta');
+  const contactSection = document.getElementById('contact');
+
+  const floatingObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        floatingCta.classList.remove('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+  floatingObserver.observe(contactSection);
+
+  window.addEventListener('scroll', () => {
+    const contactVisible = contactSection.getBoundingClientRect().top < window.innerHeight;
+    if (window.scrollY > 500 && !contactVisible) {
+      floatingCta.classList.add('visible');
+    } else {
+      floatingCta.classList.remove('visible');
+    }
   });
 
   function toggleMenu() {
